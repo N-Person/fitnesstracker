@@ -1,3 +1,16 @@
+//getting workout data from backend
+
+fetch("/api/workouts/range")
+.then(response => {
+  return response.json();
+})
+
+.then(data => {
+  popularChart(data);
+});
+
+API.getWorkoutsInRange()
+
 function generatePalette() {
   const arr = [
     '#003f5c',
@@ -20,7 +33,6 @@ function generatePalette() {
 
   return arr;
 }
-
 function populateChart(data) {
   let durations = data.map(({ totalDuration }) => totalDuration);
   let pounds = calculateTotalWeight(data);
@@ -173,36 +185,38 @@ function populateChart(data) {
   });
 }
 
-function calculateTotalWeight(data) {
-  let totals = [];
+function duration(data) {
+  let durations = [];
 
-  data.forEach((workout) => {
-    const workoutTotal = workout.exercises.reduce((total, { type, weight }) => {
-      if (type === 'resistance') {
-        return total + weight;
-      } else {
-        return total;
-      }
-    }, 0);
-
-    totals.push(workoutTotal);
+  data.forEach(workout => {
+    workout.exercises.forEach(exercise => {
+      durations.push(exercise.duration);
+    });
   });
 
-  return totals;
+  return durations;
+}
+
+function calculateTotalWeight(data) {
+  let total = [];
+
+  data.forEach(workout => {
+    workout.exercises.forEach(exercise => {
+      total.push(exercise.weight);
+    });
+  });
+
+  return total;
 }
 
 function workoutNames(data) {
   let workouts = [];
 
-  data.forEach((workout) => {
-    workout.exercises.forEach((exercise) => {
+  data.forEach(workout => {
+    workout.exercises.forEach(exercise => {
       workouts.push(exercise.name);
     });
   });
-
-  // return de-duplicated array with JavaScript `Set` object
-  return [...new Set(workouts)];
-}
-
-// get all workout data from back-end
-API.getWorkoutsInRange().then(populateChart);
+  
+  return workouts;
+};
