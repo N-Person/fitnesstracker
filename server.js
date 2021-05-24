@@ -11,11 +11,20 @@ app.use(express.json());
 app.use(express.static("public"));
 
 mongoose.connect(
-    process.env.MONGODB_URI || "mongodb://localhost/workout",
+    process.env.MONGODB_URI || "mongodb://localhost/cluster0",
    {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false} 
 );
 
-const connection = mongoose.connection;
+mongoose.connect(
+    process.env.MONGODB_URI || 'mongodb://localhost/cluster0',
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false
+    }
+  );
+
 
 connection.on("connected", () => {
 console.log("Mongoose successfully connected");
