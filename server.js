@@ -10,10 +10,6 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect(
-    process.env.MONGODB_URI || "mongodb://localhost/cluster0",
-   {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false} 
-);
 
 mongoose.connect(
     process.env.MONGODB_URI || 'mongodb://localhost/cluster0',
@@ -26,10 +22,10 @@ mongoose.connect(
   );
 
 
-connection.on("connected", () => {
+mongoose.connection.on("connected", () => {
 console.log("Mongoose successfully connected");
 });
-connection.on("error", (err) => {
+mongoose.connection.on("error", (err) => {
     console.log("Mongoose connection error: ", err);
 });
 
@@ -37,5 +33,5 @@ app.use(WorkoutController);
 require("./controllers/htmlController")(app);
 
 app.listen(PORT, () => {
-    console.log('Server is running on http://localhoset:${PORT}');
+    console.log('Server is running on http://localhost:${PORT}');
 });
